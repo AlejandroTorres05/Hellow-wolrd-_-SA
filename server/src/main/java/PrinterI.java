@@ -16,6 +16,8 @@ public class PrinterI implements Demo.Printer
 
     public Response printString(String s, com.zeroc.Ice.Current current)
     {
+        long startTime=System.nanoTime();
+
         System.out.println(s);
 
         String[] input = s.split(" ");
@@ -27,7 +29,10 @@ public class PrinterI implements Demo.Printer
             number = Integer.parseInt(input[1]);
             //return new Response(0, user + "\nFibonacci: " + fibonacci(number) + "\nPrime factors: " + primeFactor(number));
             System.out.println(user + "\nFibonacci: " + fibonacci(number) + "\nPrime factors: " + primeFactor(number));
-            return new Response(0, "Server response: " + s);
+
+            long endtime=System.nanoTime();
+            long latency= endtime-startTime;
+            return new Response(0, "Server response: " + s,latency);
 
         }catch(NumberFormatException e){
 
@@ -42,7 +47,9 @@ public class PrinterI implements Demo.Printer
             executeCommand(input[1]);
         }
 
-        return new Response(0, "Server response: " + s);
+        long endtime=System.nanoTime();
+        long latency= endtime-startTime;
+        return new Response(0, "Server response: " + s,latency);
     }
 
     private int fibonacci(int n){

@@ -43,7 +43,7 @@ public class Client
                 }
                 response = service.printString(user + message);
 
-                System.out.println("Respuesta del server: " + response.value + ", " + response.responseTime);
+                System.out.println("Respuesta del server: " + response.value + ", Tiempo de respuesta: " + response.responseTime + " ms, Latencia: " + response.latency + " ms");
             }
         }
     }
