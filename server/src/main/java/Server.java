@@ -5,6 +5,9 @@ public class Server
 {
     public static void main(String[] args)
     {
+
+
+        
         java.util.List<String> extraArgs = new java.util.ArrayList<String>();
 
         try(com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(args,"config.server",extraArgs))
@@ -20,7 +23,18 @@ public class Server
             com.zeroc.Ice.Object object = new PrinterI();
             adapter.add(object, com.zeroc.Ice.Util.stringToIdentity("SimplePrinter"));
             adapter.activate();
-            communicator.waitForShutdown();
+            
+
+              // Iniciar monitorización de through
+              ThroughputMonitor.startMonitoring();
+
+              // Esperar a que el servidor se detenga
+              communicator.waitForShutdown();
+          } catch (Exception e) {
+              e.printStackTrace();
+          } finally {
+              // Detener monitorización al cerrar el servidor
+              ThroughputMonitor.stopMonitoring();
         }
     }
 

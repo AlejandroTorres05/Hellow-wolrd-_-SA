@@ -4,7 +4,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collections;
 import java.util.Enumeration;
-
+import java.util.concurrent.atomic.AtomicLong;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
@@ -13,10 +13,16 @@ import java.util.regex.Pattern;
 public class PrinterI implements Demo.Printer
 {
     private static ArrayList<Integer> fib = new ArrayList<Integer>();
+    
+     //Throughput
+     private static final AtomicLong requestCount = new AtomicLong(0);
 
     public Response printString(String s, com.zeroc.Ice.Current current)
     {
         long startTime=System.nanoTime();
+
+        // Incrementar el contador de solicitudes
+        requestCount.incrementAndGet();
 
         System.out.println(s);
 
@@ -32,6 +38,7 @@ public class PrinterI implements Demo.Printer
 
             long endtime=System.nanoTime();
             long latency= endtime-startTime;
+         
             return new Response(0, "Server response: " + s,latency);
 
         }catch(NumberFormatException e){
@@ -49,6 +56,8 @@ public class PrinterI implements Demo.Printer
 
         long endtime=System.nanoTime();
         long latency= endtime-startTime;
+
+      
         return new Response(0, "Server response: " + s,latency);
     }
 
@@ -190,4 +199,19 @@ public class PrinterI implements Demo.Printer
             System.out.println("Error");
         }
     }
+
+
+
+
+    //Throuhput
+
+    public static long getRequestCount() {
+        return requestCount.get();
+    }
+    
+    public static void resetRequestCount() {
+        requestCount.set(0);
+    }
+
+
 }
