@@ -17,6 +17,14 @@ public class PrinterI implements Demo.Printer
      //Throughput
      private static final AtomicLong requestCount = new AtomicLong(0);
 
+     //Jitter of response 
+
+     private static final ArrayList<Long> latencyList = new ArrayList<>();
+     private static final ArrayList<Long> jitterList = new ArrayList<>();
+
+
+
+
     public Response printString(String s, com.zeroc.Ice.Current current)
     {
         long startTime=System.nanoTime();
@@ -38,8 +46,21 @@ public class PrinterI implements Demo.Printer
 
             long endtime=System.nanoTime();
             long latency= endtime-startTime;
+
+
+
+              // Guardar la latencia y calcular jitter
+              if (!latencyList.isEmpty()) {
+                long previousLatency = latencyList.get(latencyList.size() - 1);
+                long jitter = Math.abs(latency - previousLatency);
+                jitterList.add(jitter);
+            }
+
+            latencyList.add(latency);
          
             return new Response(0, "Server response: " + s,latency);
+
+           
 
         }catch(NumberFormatException e){
 
@@ -57,6 +78,15 @@ public class PrinterI implements Demo.Printer
         long endtime=System.nanoTime();
         long latency= endtime-startTime;
 
+
+           // Guardar la latencia y calcular jitter
+           if (!latencyList.isEmpty()) {
+            long previousLatency = latencyList.get(latencyList.size() - 1);
+            long jitter = Math.abs(latency - previousLatency);
+            jitterList.add(jitter);
+        }
+
+        latencyList.add(latency);
       
         return new Response(0, "Server response: " + s,latency);
     }
@@ -211,6 +241,20 @@ public class PrinterI implements Demo.Printer
     
     public static void resetRequestCount() {
         requestCount.set(0);
+    }
+
+
+
+    //Jitter
+
+    public static ArrayList<Long> getLatencyList(){
+
+        return latencyList;
+
+    }
+
+    public static ArrayList<Long> getJitterList() {
+        return jitterList;
     }
 
 
