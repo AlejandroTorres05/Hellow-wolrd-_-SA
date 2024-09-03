@@ -3,7 +3,7 @@ module Demo
     class Response{
         long responseTime;
         string value;
-        long latency;
+        long quantityOfRequestServer;
     }
     interface Printer
     {
