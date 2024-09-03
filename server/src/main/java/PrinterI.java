@@ -65,7 +65,20 @@ public class PrinterI implements Demo.Printer
             latencyList.add(latency);
          
             processedRequestCount.incrementAndGet();
-            return new Response(0, "Server response: " + s,latency);
+
+            //Pruebas
+            System.out.println("procesadas server: "+processedRequestCount.get());
+
+            System.out.println("No procesadas: "+failedRequestCount.get());
+
+
+            //
+
+
+            long quantityOfRequestServer=processedRequestCount.get()+failedRequestCount.get();
+
+            System.out.println("Latency process: "+latency);
+            return new Response(0, "Server response: " + s,quantityOfRequestServer);
 
 
            
@@ -99,8 +112,13 @@ public class PrinterI implements Demo.Printer
         }
 
         latencyList.add(latency);
-        processedRequestCount.incrementAndGet();
-        return new Response(0, "Server response: " + s,latency);
+        //processedRequestCount.incrementAndGet();
+
+
+        long quantityOfRequestServer=processedRequestCount.get()+failedRequestCount.get();
+
+        System.out.println("Latency process: "+latency);
+        return new Response(0, "Server response: " + s,quantityOfRequestServer);
     }
 
     private int fibonacci(int n){

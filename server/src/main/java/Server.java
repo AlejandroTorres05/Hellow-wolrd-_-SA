@@ -10,6 +10,8 @@ public class Server
         
         java.util.List<String> extraArgs = new java.util.ArrayList<String>();
 
+      
+
         try(com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(args,"config.server",extraArgs))
         {
             if(!extraArgs.isEmpty())

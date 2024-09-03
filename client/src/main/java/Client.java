@@ -6,21 +6,22 @@ import java.net.UnknownHostException;
 
 public class Client {
 
-     // Contador de solicitudes enviadas
-     private static final AtomicLong sentRequestCount = new AtomicLong(0);
+    // Contador de solicitudes enviadas
+    private static final AtomicLong sentRequestCount = new AtomicLong(0);
 
+
+    // Contador de solicitudes perdidas
+    private static final AtomicLong missedRequest = new AtomicLong(0);
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         java.util.List<String> extraArgs = new java.util.ArrayList<>();
 
-
-
+           // Iniciar el monitor
+           MonitorClient.startMonitoring();
 
         try (com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(args, "config.client",
                 extraArgs)) {
-            // com.zeroc.Ice.ObjectPrx base =
-            // communicator.stringToProxy("SimplePrinter:default -p 10000");
             Response response = null;
             Demo.PrinterPrx service = Demo.PrinterPrx
                     .checkedCast(communicator.propertyToProxy("Printer.Proxy"));
@@ -42,19 +43,35 @@ public class Client {
                     + "\n-Exit para cerrar el programa");
 
             while (execute) {
-
                 message = scanner.nextLine();
-                if (message == "exit") {
+                if (message.equalsIgnoreCase("exit")) {
                     return;
                 }
 
                 // Incrementar el contador de solicitudes enviadas
                 sentRequestCount.incrementAndGet();
 
+                // Enviar solicitud y recibir respuesta
                 response = service.printString(user + message);
 
-                System.out.println("Respuesta del server: " + response.value + ", Tiempo de respuesta: "
-                        + response.responseTime + " ms, Latencia: " + response.latency + " ns");
+
+                // Imprimir respuesta del servidor
+                System.out.println("Respuesta del server: " + response.value);
+
+                // Calcular y mostrar la diferencia entre solicitudes enviadas y atendidas
+                long quantityOfRequestServer = response.quantityOfRequestServer;
+                long sentRequests = sentRequestCount.get();
+                long missedRequestww = sentRequests - quantityOfRequestServer;
+                
+                //Pruebas:
+                System.out.println("cantidad del server:"+quantityOfRequestServer);
+                System.out.println("enviadas del cliente:"+sentRequests);
+                System.out.println("perdidas:"+missedRequestww);
+                
+
+                missedRequest.set(missedRequestww);
+
+             
             }
         }
     }
@@ -72,4 +89,20 @@ public class Client {
             return "unknown-host";
         }
     }
+
+
+
+    public static long getMissedRequest(){
+
+        return missedRequest.get();
+
+    }
+
+
+    public static void resetMissRequest() {
+        missedRequest.set(0);
+    }
+
+
+
 }
