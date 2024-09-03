@@ -63,11 +63,7 @@ public class Client {
                 long sentRequests = sentRequestCount.get();
                 long missedRequestww = sentRequests - quantityOfRequestServer;
                 
-                //Pruebas:
-                System.out.println("cantidad del server:"+quantityOfRequestServer);
-                System.out.println("enviadas del cliente:"+sentRequests);
-                System.out.println("perdidas:"+missedRequestww);
-                
+               
 
                 missedRequest.set(missedRequestww);
 
