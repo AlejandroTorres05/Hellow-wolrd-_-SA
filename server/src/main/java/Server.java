@@ -26,7 +26,7 @@ public class Server
             
 
               // Iniciar monitorización de through
-              ThroughputMonitor.startMonitoring();
+              Monitor.startMonitoring();
 
               // Esperar a que el servidor se detenga
               communicator.waitForShutdown();
@@ -34,7 +34,7 @@ public class Server
               e.printStackTrace();
           } finally {
               // Detener monitorización al cerrar el servidor
-              ThroughputMonitor.stopMonitoring();
+              Monitor.stopMonitoring();
         }
     }
 

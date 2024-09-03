@@ -1,13 +1,21 @@
 import Demo.Response;
 import java.util.Scanner;
-
+import java.util.concurrent.atomic.AtomicLong;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Client {
+
+     // Contador de solicitudes enviadas
+     private static final AtomicLong sentRequestCount = new AtomicLong(0);
+
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         java.util.List<String> extraArgs = new java.util.ArrayList<>();
+
+
+
 
         try (com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(args, "config.client",
                 extraArgs)) {
@@ -39,6 +47,10 @@ public class Client {
                 if (message == "exit") {
                     return;
                 }
+
+                // Incrementar el contador de solicitudes enviadas
+                sentRequestCount.incrementAndGet();
+
                 response = service.printString(user + message);
 
                 System.out.println("Respuesta del server: " + response.value + ", Tiempo de respuesta: "

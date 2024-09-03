@@ -22,6 +22,12 @@ public class PrinterI implements Demo.Printer
      private static final ArrayList<Long> latencyList = new ArrayList<>();
      private static final ArrayList<Long> jitterList = new ArrayList<>();
 
+     
+     // Contador de solicitudes procesadas con éxito
+     private static final AtomicLong processedRequestCount = new AtomicLong(0);
+
+     // Contador de solicitudes fallidas (no procesadas)
+    private static final AtomicLong failedRequestCount = new AtomicLong(0);
 
 
 
@@ -58,11 +64,17 @@ public class PrinterI implements Demo.Printer
 
             latencyList.add(latency);
          
+            processedRequestCount.incrementAndGet();
             return new Response(0, "Server response: " + s,latency);
+
 
            
 
         }catch(NumberFormatException e){
+
+            // Incrementar el contador de solicitudes fallidas
+            failedRequestCount.incrementAndGet();
+            System.out.println("Error: " + e.getMessage());
 
         }
 
@@ -87,7 +99,7 @@ public class PrinterI implements Demo.Printer
         }
 
         latencyList.add(latency);
-      
+        processedRequestCount.incrementAndGet();
         return new Response(0, "Server response: " + s,latency);
     }
 
@@ -141,7 +153,10 @@ public class PrinterI implements Demo.Printer
 
             
         }catch (SocketException e){
+            // Incrementar el contador de solicitudes fallidas
+            failedRequestCount.incrementAndGet();
             System.out.println("Error: " + e.getMessage());
+
         }
     }
     
@@ -176,7 +191,10 @@ public class PrinterI implements Demo.Printer
             }
 
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+           // Incrementar el contador de solicitudes fallidas
+           failedRequestCount.incrementAndGet();
+           System.out.println("Error: " + e.getMessage());
+
         }
     }
     
@@ -226,7 +244,10 @@ public class PrinterI implements Demo.Printer
             }
 
         } catch (Exception e) {
-            System.out.println("Error");
+            // Incrementar el contador de solicitudes fallidas
+            failedRequestCount.incrementAndGet();
+            System.out.println("Error: " + e.getMessage());
+
         }
     }
 
@@ -255,6 +276,30 @@ public class PrinterI implements Demo.Printer
 
     public static ArrayList<Long> getJitterList() {
         return jitterList;
+    }
+
+
+    public static long getRequestNotProcess(){
+
+        return failedRequestCount.get();
+
+    }
+
+
+    public static void resetFailedRequestCount() {
+        failedRequestCount.set(0);
+    }
+
+
+    public static long getRequestProcess(){
+
+        return processedRequestCount.get();
+
+    }
+
+
+    public static void ProcessedRequestCount() {
+        processedRequestCount.set(0);
     }
 
 
