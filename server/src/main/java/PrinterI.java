@@ -4,7 +4,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collections;
 import java.util.Enumeration;
-
+import java.util.concurrent.atomic.AtomicLong;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
@@ -13,9 +13,25 @@ import java.util.regex.Pattern;
 public class PrinterI implements Demo.Printer
 {
     private static ArrayList<Integer> fib = new ArrayList<Integer>();
+    
+     //Throughput
+     private static final AtomicLong requestCount = new AtomicLong(0);
+
+     //Jitter of response 
+
+     private static final ArrayList<Long> latencyList = new ArrayList<>();
+     private static final ArrayList<Long> jitterList = new ArrayList<>();
+
+
+
 
     public Response printString(String s, com.zeroc.Ice.Current current)
     {
+        long startTime=System.nanoTime();
+
+        // Incrementar el contador de solicitudes
+        requestCount.incrementAndGet();
+
         System.out.println(s);
 
         String[] input = s.split(" ");
@@ -27,7 +43,24 @@ public class PrinterI implements Demo.Printer
             number = Integer.parseInt(input[1]);
             //return new Response(0, user + "\nFibonacci: " + fibonacci(number) + "\nPrime factors: " + primeFactor(number));
             System.out.println(user + "\nFibonacci: " + fibonacci(number) + "\nPrime factors: " + primeFactor(number));
-            return new Response(0, "Server response: " + s);
+
+            long endtime=System.nanoTime();
+            long latency= endtime-startTime;
+
+
+
+              // Guardar la latencia y calcular jitter
+              if (!latencyList.isEmpty()) {
+                long previousLatency = latencyList.get(latencyList.size() - 1);
+                long jitter = Math.abs(latency - previousLatency);
+                jitterList.add(jitter);
+            }
+
+            latencyList.add(latency);
+         
+            return new Response(0, "Server response: " + s,latency);
+
+           
 
         }catch(NumberFormatException e){
 
@@ -42,7 +75,20 @@ public class PrinterI implements Demo.Printer
             executeCommand(input[1]);
         }
 
-        return new Response(0, "Server response: " + s);
+        long endtime=System.nanoTime();
+        long latency= endtime-startTime;
+
+
+           // Guardar la latencia y calcular jitter
+           if (!latencyList.isEmpty()) {
+            long previousLatency = latencyList.get(latencyList.size() - 1);
+            long jitter = Math.abs(latency - previousLatency);
+            jitterList.add(jitter);
+        }
+
+        latencyList.add(latency);
+      
+        return new Response(0, "Server response: " + s,latency);
     }
 
     private int fibonacci(int n){
@@ -183,4 +229,33 @@ public class PrinterI implements Demo.Printer
             System.out.println("Error");
         }
     }
+
+
+
+
+    //Throuhput
+
+    public static long getRequestCount() {
+        return requestCount.get();
+    }
+    
+    public static void resetRequestCount() {
+        requestCount.set(0);
+    }
+
+
+
+    //Jitter
+
+    public static ArrayList<Long> getLatencyList(){
+
+        return latencyList;
+
+    }
+
+    public static ArrayList<Long> getJitterList() {
+        return jitterList;
+    }
+
+
 }
