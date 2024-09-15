@@ -56,7 +56,9 @@ public class Client {
 
 
                 // Imprimir respuesta del servidor
+                System.out.println("------------Solicitud-------------");
                 System.out.println("Respuesta del server: " + response.value);
+                System.out.println();
 
                 // Calcular y mostrar la diferencia entre solicitudes enviadas y atendidas
                 long quantityOfRequestServer = response.quantityOfRequestServer;
@@ -64,9 +66,10 @@ public class Client {
                 long missedRequestww = sentRequests - quantityOfRequestServer;
                 
                 //Pruebas:
-                System.out.println("cantidad del server:"+quantityOfRequestServer);
-                System.out.println("enviadas del cliente:"+sentRequests);
-                System.out.println("perdidas:"+missedRequestww);
+               // System.out.println("cantidad del server:"+quantityOfRequestServer);
+               // System.out.println("enviadas del cliente:"+sentRequests);
+               // System.out.println("------Miss rate:------");
+                //System.out.println("perdidas:"+missedRequestww);
                 
 
                 missedRequest.set(missedRequestww);

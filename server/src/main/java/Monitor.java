@@ -16,15 +16,22 @@ public class Monitor {
             if (!jitterList.isEmpty()) {
                 long totalJitter = jitterList.stream().mapToLong(Long::longValue).sum();
                 long averageJitter = totalJitter / jitterList.size();
+
+                System.out.println("\n--------Performance:--------------- \n");
                 System.out.println("Throughput: " + count + " requests in the last minute");
                 System.out.println("Average Jitter: " + averageJitter + " ns");
                 System.out.println("Unprocess Requests: " + failedRequests+ " requests in the last minute");
                 System.out.println("Processed Requests: " + processedRequests+ " requests in the last minute");
+                System.out.println("-------------------------------------");
+                System.out.println();
             } else {
+                System.out.println("\n--------Performance:--------------- \n");
                 System.out.println("Throughput: " + count + " requests in the last minute");
                 System.out.println("No jitter data available.");
                 System.out.println("Failed Requests: " + failedRequests);
                 System.out.println("Processed Requests: " + processedRequests);
+                System.out.println("-------------------------------------");
+                System.out.println();
             }
             
             //Resetear contadores 

@@ -67,9 +67,9 @@ public class PrinterI implements Demo.Printer
             processedRequestCount.incrementAndGet();
 
             //Pruebas
-            System.out.println("procesadas server: "+processedRequestCount.get());
+            //System.out.println("procesadas server: "+processedRequestCount.get());
 
-            System.out.println("No procesadas: "+failedRequestCount.get());
+            //System.out.println("No procesadas: "+failedRequestCount.get());
 
 
             //
@@ -78,6 +78,7 @@ public class PrinterI implements Demo.Printer
             long quantityOfRequestServer=processedRequestCount.get()+failedRequestCount.get();
 
             System.out.println("Latency process: "+latency);
+            System.out.println();
             return new Response(0, "Server response: " + s,quantityOfRequestServer);
 
 
